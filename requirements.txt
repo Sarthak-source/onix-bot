@@ -1,0 +1,7 @@
+Flask
+firebase-admin
+transformers
+torch
+numpy
+scikit-learn
+sentence-transformers
