@@ -9,7 +9,7 @@ from flask import Flask, request, jsonify
 
 # Initialize Flask app
 app = Flask(__name__)
-print('bot-says-hello-world')
+#print('bot-says-hello-world')
 
 # Load the question-answering pipeline
 qa_pipeline = pipeline("question-answering", model='bert-large-uncased-whole-word-masking-finetuned-squad')
