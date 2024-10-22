@@ -20,7 +20,8 @@ sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
 
 # Initialize Firebase Admin SDK (check if already initialized)
 if not firebase_admin._apps:
-    cred = credentials.Certificate('serviceAccountKey.json')  # Replace with the correct path to your service account key
+    cred = credentials.Certificate('serviceAccountKey.json') 
+    # Replace with the correct path to your service account key
     firebase_admin.initialize_app(cred)
 
 # Create a Firestore client
