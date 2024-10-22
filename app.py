@@ -6,6 +6,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import re
 from flask import Flask, request, jsonify
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -86,4 +87,5 @@ def ask_question():
 
 # Run the Flask app
 if __name__ == '__main__':
+    port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host='0.0.0.0')
