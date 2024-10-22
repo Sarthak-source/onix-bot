@@ -7,6 +7,7 @@ from firebase_admin import credentials, firestore
 import re
 from flask import Flask, request, jsonify
 import os
+import logging
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -61,30 +62,47 @@ def read_recent_uploaded_data():
 
 # API route to handle questions and return answers
 @app.route('/ask', methods=['POST'])
+
+# Set up logging
+#logging.basicConfig(level=logging.INFO)
+
+@app.route('/ask', methods=['POST'])
 def ask_question():
     # Parse the incoming request
     request_data = request.json
     question = request_data.get('question')
 
-    # Read the most recent data from Firestore
-    recent_data = read_recent_uploaded_data()
+    if not question:
+        return jsonify({'error': 'No question provided'}), 400
 
-    # Get the combined text from the Firestore document
-    combined_text = recent_data.get('combined_text', '')
+    try:
+        # Read the most recent data from Firestore
+        recent_data = read_recent_uploaded_data()
 
-    # Chunk the combined text
-    chunks = chunk_text(combined_text)
+        # Check if recent_data is None
+        if not recent_data:
+            return jsonify({'error': 'No recent data found'}), 404
 
-    # Get the answer and the relevant chunk
-    answer, relevant_chunk = answer_question(question, chunks)
+        # Get the combined text from the Firestore document
+        combined_text = recent_data.get('combined_text', '')
 
-    # Return the result as a JSON response
-    response = {
-        'question': question,
-        'answer': answer,
-        'relevant_chunk': relevant_chunk
-    }
-    return jsonify(response)
+        # Chunk the combined text
+        chunks = chunk_text(combined_text)
+
+        # Get the answer and the relevant chunk
+        answer, relevant_chunk = answer_question(question, chunks)
+
+        # Return the result as a JSON response
+        response = {
+            'question': question,
+            'answer': answer,
+            'relevant_chunk': relevant_chunk
+        }
+        return jsonify(response)
+
+    except Exception as e:
+        logging.error('Error processing question: %s', str(e))
+        return jsonify({'error': 'An error occurred while processing your request.'}), 500
 
 # Run the Flask app
 if __name__ == '__main__':
