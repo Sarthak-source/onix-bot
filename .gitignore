@@ -1,0 +1,37 @@
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+.env
+
+# IDE settings
+*.idea/
+*.vscode/
+
+# Byte-compiled files
+*.pyc
+*.pyo
+
+# Log files
+*.log
+
+# Database files
+*.sqlite3
+
+# Flask specific files
+instance/
+.webassets-cache
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Coverage reports
+coverage.xml
+*.cover
+*.py,cover
+
+# Miscellaneous
+.DS_Store
+Thumbs.db
