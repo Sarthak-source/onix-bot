@@ -13,7 +13,7 @@ app = Flask(__name__)
 print('bot-says-hello-world')
 
 # Load the question-answering pipeline
-qa_pipeline = pipeline("question-answering", model='bert-large-uncased-whole-word-masking-finetuned-squad')
+qa_pipeline = pipeline("question-answering", model='distilbert-base-uncased-distilled-squad')
 
 # Load the Sentence Transformer model
 sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
