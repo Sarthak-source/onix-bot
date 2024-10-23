@@ -8,6 +8,7 @@ import re
 from flask import Flask, request, jsonify
 import os
 import logging
+#import json
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -19,9 +20,33 @@ qa_pipeline = pipeline("question-answering", model='distilbert-base-uncased-dist
 # Load the Sentence Transformer model
 sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
 
+type_ = os.getenv("TYPE")
+project_id = os.getenv("PROJECT_ID")
+private_key_id = os.getenv("PRIVATE_KEY_ID")
+private_key = os.getenv("PRIVATE_KEY")
+client_email = os.getenv("CLIENT_EMAIL")
+client_id = os.getenv("CLIENT_ID")
+auth_uri = os.getenv("AUTH_URI")
+token_uri = os.getenv("TOKEN_URI")
+auth_provider_x509_cert_url = os.getenv("AUTH_PROVIDER_X509_CERT_URL")
+client_x509_cert_url = os.getenv("CLIENT_X509_CERT_URL")
+universe_domain = os.getenv("UNIVERSE_DOMAIN")
+
 # Initialize Firebase Admin SDK (check if already initialized)
 if not firebase_admin._apps:
-    cred = credentials.Certificate('serviceAccountKey.json') 
+    cred_initialize = credentials.Certificate({
+        "type": type_,
+        "project_id": project_id,
+        "private_key_id": private_key_id,
+        "private_key": private_key.replace("\\n", "\n"),  # Replace escaped newlines with real newlines
+        "client_email": client_email,
+        "client_id": client_id,
+        "auth_uri": auth_uri,
+        "token_uri": token_uri,
+        "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
+        "client_x509_cert_url": client_x509_cert_url
+    })
+    cred = credentials.Certificate(cred_initialize) 
     # Replace with the correct path to your service account key
     firebase_admin.initialize_app(cred)
 
