@@ -40,13 +40,12 @@ def chunk_text(text, chunk_size=500):
 
 # Function to answer questions using Google Gemini
 def answer_question(question, text):
-    model = genai.GenerativeModel('gemini-pro')  # Ensure the model is defined
+    model = genai.GenerativeModel('gemini-1.5-flash')  # Ensure the model is defined
     for chunk in chunk_text(text):
         try:
             # Call the Gemini model
             response = model.generate_content(
-                prompt=f"Q: {question}\nA:",
-                context=chunk
+                [question , text]
             )
             answer = response.text  # Adjusted to access text directly
             if answer:  # Return the answer if found
@@ -64,7 +63,7 @@ def read_recent_uploaded_data():
         data = doc.to_dict()
         logging.info(f"Recent data length: {len(data)}")
         return data
-    return None  
+    return None
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
