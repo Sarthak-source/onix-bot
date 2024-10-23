@@ -34,19 +34,20 @@ universe_domain = os.getenv("UNIVERSE_DOMAIN")
 
 # Initialize Firebase Admin SDK (check if already initialized)
 if not firebase_admin._apps:
-    cred_initialize = credentials.Certificate({
-        "type": type_,
-        "project_id": project_id,
-        "private_key_id": private_key_id,
-        "private_key": private_key.replace("\\n", "\n"),  # Replace escaped newlines with real newlines
-        "client_email": client_email,
-        "client_id": client_id,
-        "auth_uri": auth_uri,
-        "token_uri": token_uri,
-        "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
-        "client_x509_cert_url": client_x509_cert_url
-    })
-    firebase_admin.initialize_app(cred_initialize)
+    cred_initialize = {
+    "type": type_,
+    "project_id": project_id,
+    "private_key_id": private_key_id,
+    "private_key": private_key.replace("\\n", "\n"),  # Replace escaped newlines with real newlines
+    "client_email": client_email,
+    "client_id": client_id,
+    "auth_uri": auth_uri,
+    "token_uri": token_uri,
+    "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
+    "client_x509_cert_url": client_x509_cert_url
+    }
+
+    firebase_admin.initialize_app(credentials.Certificate(cred_initialize))
 
 # Create a Firestore client
 db = firestore.client()
