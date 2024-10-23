@@ -1,32 +1,45 @@
 import numpy as np
 import sys
-#import psutil
-from transformers import pipeline
-from sentence_transformers import SentenceTransformer, util
-import firebase_admin
-from firebase_admin import credentials, firestore
-from flask import Flask, request, jsonify
 import os
 import logging
 import gc
+from transformers import pipeline
+from sentence_transformers import SentenceTransformer, util
+from flask import Flask, request, jsonify
+from firebase_admin import credentials, firestore, initialize_app
+import firebase_admin
+from pinferencia import Server, task
 
 # Initialize Flask app
 app = Flask(__name__)
 print('bot-says-hello-world')
 
-# Load the question-answering pipeline and Sentence Transformer model once at startup
-qa_pipeline = pipeline("question-answering", model='distilbert-base-uncased')
-sentence_model = SentenceTransformer('paraphrase-MiniLM-L6-v2')  # Smaller model
+# Set up logging
+logging.basicConfig(level=logging.INFO)
 
-# Log the model size in memory
-def log_model_memory():
-    qa_model_size = sys.getsizeof(qa_pipeline.model)
-    sentence_model_size = sys.getsizeof(sentence_model)
+# Load the models using Pinferencia
+class QuestionAnsweringModel:
+    def __init__(self):
+        self.qa_pipeline = pipeline("question-answering", model='distilbert-base-uncased')
 
-    logging.info(f"QA Model Size: {qa_model_size / (1024 ** 2):.2f} MB")
-    logging.info(f"Sentence Model Size: {sentence_model_size / (1024 ** 2):.2f} MB")
+    @task
+    def predict(self, data):
+        question = data['question']
+        context = data['context']
+        return self.qa_pipeline(question=question, context=context)
 
-log_model_memory()  # Log model sizes at startup
+class SentenceEmbeddingModel:
+    def __init__(self):
+        self.sentence_model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
+
+    @task
+    def predict(self, data):
+        return self.sentence_model.encode(data['text'], convert_to_tensor=True)
+
+# Pinferencia server initialization
+server = Server()
+server.register(QuestionAnsweringModel, "/qa")
+server.register(SentenceEmbeddingModel, "/sentence")
 
 # Firebase credentials
 firebase_credentials = {
@@ -58,8 +71,8 @@ def chunk_text(text, chunk_size=500):
 # Function to find the most relevant chunk for the question using Sentence Transformers
 def find_relevant_chunk(question, chunk):
     """Finds the most relevant chunk of text for a given question using Sentence Transformers."""
-    question_embedding = sentence_model.encode(question, convert_to_tensor=True)
-    chunk_embedding = sentence_model.encode(chunk, convert_to_tensor=True)
+    question_embedding = server.model("/sentence").predict({"text": question})
+    chunk_embedding = server.model("/sentence").predict({"text": chunk})
 
     # Compute cosine similarity
     cosine_similarity = util.pytorch_cos_sim(question_embedding, chunk_embedding)
@@ -71,7 +84,7 @@ def answer_question(question, text):
     for chunk in chunk_text(text):
         similarity = find_relevant_chunk(question, chunk)  # Get similarity for the current chunk
         if similarity > 0.5:  # Use a threshold to determine relevance
-            result = qa_pipeline(question=question, context=chunk)
+            result = server.model("/qa").predict({"question": question, "context": chunk})
             if result['answer']:  # Return the answer if found
                 return result['answer'], chunk
     return "No answer found", ""
@@ -86,9 +99,6 @@ def read_recent_uploaded_data():
         logging.info(f"Recent data length: {len(data)}")  # Log the length of recent data
         return data
     return None  # Return None if no documents found
-
-# Set up logging
-logging.basicConfig(level=logging.INFO)
 
 # API route to handle questions and return answers
 @app.route('/ask', methods=['POST'])
@@ -129,7 +139,7 @@ def ask_question_api():
         # Run garbage collection to free memory
         gc.collect()
 
-# Run the Flask app
+# Run the Pinferencia server and Flask app
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(debug=True, host='0.0.0.0')
