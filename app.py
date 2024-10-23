@@ -8,7 +8,8 @@ from sentence_transformers import SentenceTransformer, util
 from flask import Flask, request, jsonify
 from firebase_admin import credentials, firestore, initialize_app
 import firebase_admin
-from pinferencia import Server, task
+from pinferencia import Server
+from pinferencia.task import task  # Ensure the correct import
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -17,27 +18,35 @@ print('bot-says-hello-world')
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 
-# Load the models using Pinferencia
+# Define the Question Answering Model class for Pinferencia
 class QuestionAnsweringModel:
     def __init__(self):
+        # Load the question-answering pipeline using Hugging Face's transformers
         self.qa_pipeline = pipeline("question-answering", model='distilbert-base-uncased')
 
     @task
     def predict(self, data):
+        # Extract the question and context from the input data
         question = data['question']
         context = data['context']
+        # Use the QA pipeline to generate an answer
         return self.qa_pipeline(question=question, context=context)
 
+# Define the Sentence Embedding Model class for Pinferencia
 class SentenceEmbeddingModel:
     def __init__(self):
+        # Load the Sentence Transformer model for embedding
         self.sentence_model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
 
     @task
     def predict(self, data):
+        # Encode the input text and return the sentence embeddings
         return self.sentence_model.encode(data['text'], convert_to_tensor=True)
 
-# Pinferencia server initialization
+# Initialize the Pinferencia server
 server = Server()
+
+# Register the models to different routes on the server
 server.register(QuestionAnsweringModel, "/qa")
 server.register(SentenceEmbeddingModel, "/sentence")
 
@@ -71,19 +80,22 @@ def chunk_text(text, chunk_size=500):
 # Function to find the most relevant chunk for the question using Sentence Transformers
 def find_relevant_chunk(question, chunk):
     """Finds the most relevant chunk of text for a given question using Sentence Transformers."""
+    # Get embeddings for the question and the chunk of text
     question_embedding = server.model("/sentence").predict({"text": question})
     chunk_embedding = server.model("/sentence").predict({"text": chunk})
 
-    # Compute cosine similarity
+    # Compute cosine similarity between the question and chunk
     cosine_similarity = util.pytorch_cos_sim(question_embedding, chunk_embedding)
     return cosine_similarity.item()  # Return the similarity score
 
 # Function to answer questions based on the relevant context
 def answer_question(question, text):
-    """Answers the question based on the most relevant chunk."""
+    """Answers the question based on the most relevant chunk of context."""
     for chunk in chunk_text(text):
-        similarity = find_relevant_chunk(question, chunk)  # Get similarity for the current chunk
+        # Check if the chunk is relevant based on similarity
+        similarity = find_relevant_chunk(question, chunk)
         if similarity > 0.5:  # Use a threshold to determine relevance
+            # Get the answer from the QA model
             result = server.model("/qa").predict({"question": question, "context": chunk})
             if result['answer']:  # Return the answer if found
                 return result['answer'], chunk
@@ -91,19 +103,21 @@ def answer_question(question, text):
 
 # Function to read the most recent uploaded data from Firestore
 def read_recent_uploaded_data():
-    collection_name = 'onix_data'  # Replace with your collection name
+    """Reads the most recent document from Firestore."""
+    collection_name = 'onix_data'  # Replace with your Firestore collection name
     recent_doc = db.collection(collection_name).order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
     
     for doc in recent_doc:
         data = doc.to_dict()  # Get the data of the most recent document
         logging.info(f"Recent data length: {len(data)}")  # Log the length of recent data
         return data
-    return None  # Return None if no documents found
+    return None  # Return None if no documents are found
 
 # API route to handle questions and return answers
 @app.route('/ask', methods=['POST'])
 def ask_question_api():
-    # Parse the incoming request
+    """Handles incoming POST requests to answer questions."""
+    # Parse the incoming request JSON data
     request_data = request.json
     logging.info('Received request: %s', request_data)
 
