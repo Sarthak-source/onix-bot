@@ -24,8 +24,6 @@ firebase_credentials = {
     "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL")
 }
 
-#print(firebase_credentials)
-
 if not firebase_admin._apps:
     firebase_admin.initialize_app(credentials.Certificate(firebase_credentials))
 
@@ -42,16 +40,19 @@ def chunk_text(text, chunk_size=500):
 
 # Function to answer questions using Google Gemini
 def answer_question(question, text):
+    model = genai.GenerativeModel('gemini-pro')  # Ensure the model is defined
     for chunk in chunk_text(text):
-        # Call the Gemini model
-        response = genai.generate_text(
-            model='gemini-pro',
-            prompt=f"Q: {question}\nA:",
-            context=chunk
-        )
-        answer = response.result.get('text')
-        if answer:  # Return the answer if found
-            return answer, chunk
+        try:
+            # Call the Gemini model
+            response = model.generate_content(
+                prompt=f"Q: {question}\nA:",
+                context=chunk
+            )
+            answer = response.text  # Adjusted to access text directly
+            if answer:  # Return the answer if found
+                return answer, chunk
+        except Exception as e:
+            logging.error('Error during text generation: %s', str(e))
     return "No answer found", ""
 
 # Function to read the most recent uploaded data from Firestore
