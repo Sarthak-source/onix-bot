@@ -1,4 +1,6 @@
 import numpy as np
+import sys
+#import psutil
 from transformers import pipeline
 from sentence_transformers import SentenceTransformer, util
 import firebase_admin
@@ -12,40 +14,37 @@ import gc
 app = Flask(__name__)
 print('bot-says-hello-world')
 
-# Load the question-answering pipeline
+# Load the question-answering pipeline and Sentence Transformer model once at startup
 qa_pipeline = pipeline("question-answering", model='distilbert-base-uncased-distilled-squad')
-
-# Load the Sentence Transformer model
 sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
 
-# Firebase credentials
-type_ = os.getenv("TYPE")
-project_id = os.getenv("PROJECT_ID")
-private_key_id = os.getenv("PRIVATE_KEY_ID")
-private_key = os.getenv("PRIVATE_KEY").replace("\\n", "\n")  # Replace escaped newlines with real newlines
-client_email = os.getenv("CLIENT_EMAIL")
-client_id = os.getenv("CLIENT_ID")
-auth_uri = os.getenv("AUTH_URI")
-token_uri = os.getenv("TOKEN_URI")
-auth_provider_x509_cert_url = os.getenv("AUTH_PROVIDER_X509_CERT_URL")
-client_x509_cert_url = os.getenv("CLIENT_X509_CERT_URL")
-universe_domain = os.getenv("UNIVERSE_DOMAIN")
+# Log the model size in memory
+def log_model_memory():
+    qa_model_size = sys.getsizeof(qa_pipeline.model)
+    sentence_model_size = sys.getsizeof(sentence_model)
 
-# Initialize Firebase Admin SDK (check if already initialized)
+    logging.info(f"QA Model Size: {qa_model_size / (1024 ** 2):.2f} MB")
+    logging.info(f"Sentence Model Size: {sentence_model_size / (1024 ** 2):.2f} MB")
+
+log_model_memory()  # Log model sizes at startup
+
+# Firebase credentials
+firebase_credentials = {
+    "type": os.getenv("TYPE"),
+    "project_id": os.getenv("PROJECT_ID"),
+    "private_key_id": os.getenv("PRIVATE_KEY_ID"),
+    "private_key": os.getenv("PRIVATE_KEY").replace("\\n", "\n"),
+    "client_email": os.getenv("CLIENT_EMAIL"),
+    "client_id": os.getenv("CLIENT_ID"),
+    "auth_uri": os.getenv("AUTH_URI"),
+    "token_uri": os.getenv("TOKEN_URI"),
+    "auth_provider_x509_cert_url": os.getenv("AUTH_PROVIDER_X509_CERT_URL"),
+    "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL")
+}
+
+# Initialize Firebase Admin SDK if not already initialized
 if not firebase_admin._apps:
-    cred_initialize = {
-        "type": type_,
-        "project_id": project_id,
-        "private_key_id": private_key_id,
-        "private_key": private_key,
-        "client_email": client_email,
-        "client_id": client_id,
-        "auth_uri": auth_uri,
-        "token_uri": token_uri,
-        "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
-        "client_x509_cert_url": client_x509_cert_url
-    }
-    firebase_admin.initialize_app(credentials.Certificate(cred_initialize))
+    firebase_admin.initialize_app(credentials.Certificate(firebase_credentials))
 
 # Create a Firestore client
 db = firestore.client()
@@ -83,7 +82,9 @@ def read_recent_uploaded_data():
     recent_doc = db.collection(collection_name).order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
     
     for doc in recent_doc:
-        return doc.to_dict()  # Return the data of the most recent document
+        data = doc.to_dict()  # Get the data of the most recent document
+        logging.info(f"Recent data length: {len(data)}")  # Log the length of recent data
+        return data
     return None  # Return None if no documents found
 
 # Set up logging
