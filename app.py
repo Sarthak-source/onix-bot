@@ -24,7 +24,7 @@ firebase_credentials = {
     "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL")
 }
 
-print(firebase_credentials)
+#print(firebase_credentials)
 
 if not firebase_admin._apps:
     firebase_admin.initialize_app(credentials.Certificate(firebase_credentials))
@@ -45,7 +45,7 @@ def answer_question(question, text):
     for chunk in chunk_text(text):
         # Call the Gemini model
         response = genai.generate_text(
-            model='gemini-pro',  # Update with the correct model name
+            model='gemini-pro',
             prompt=f"Q: {question}\nA:",
             context=chunk
         )
