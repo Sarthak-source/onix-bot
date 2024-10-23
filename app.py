@@ -15,7 +15,7 @@ firebase_credentials = {
     "type": os.getenv("TYPE"),
     "project_id": os.getenv("PROJECT_ID"),
     "private_key_id": os.getenv("PRIVATE_KEY_ID"),
-    "private_key": os.getenv("PRIVATE_KEY").replace("\\n", "\n"),
+    "private_key": os.getenv("PRIVATE_KEY").replace('\\n', '\n'),
     "client_email": os.getenv("CLIENT_EMAIL"),
     "client_id": os.getenv("CLIENT_ID"),
     "auth_uri": os.getenv("AUTH_URI"),
@@ -23,6 +23,8 @@ firebase_credentials = {
     "auth_provider_x509_cert_url": os.getenv("AUTH_PROVIDER_X509_CERT_URL"),
     "client_x509_cert_url": os.getenv("CLIENT_X509_CERT_URL")
 }
+
+print(firebase_credentials)
 
 if not firebase_admin._apps:
     firebase_admin.initialize_app(credentials.Certificate(firebase_credentials))
@@ -100,5 +102,5 @@ def ask_question_api():
 
 # Run the Flask app
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5001))
     app.run(debug=True, host='0.0.0.0')
