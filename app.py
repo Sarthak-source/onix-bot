@@ -15,8 +15,8 @@ app = Flask(__name__)
 print('bot-says-hello-world')
 
 # Load the question-answering pipeline and Sentence Transformer model once at startup
-qa_pipeline = pipeline("question-answering", model='distilbert-base-uncased-distilled-squad')
-sentence_model = SentenceTransformer('all-MiniLM-L6-v2')
+qa_pipeline = pipeline("question-answering", model='distilbert-base-uncased')
+sentence_model = SentenceTransformer('paraphrase-MiniLM-L6-v2')  # Smaller model
 
 # Log the model size in memory
 def log_model_memory():
