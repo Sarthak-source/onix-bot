@@ -46,9 +46,7 @@ if not firebase_admin._apps:
         "auth_provider_x509_cert_url": auth_provider_x509_cert_url,
         "client_x509_cert_url": client_x509_cert_url
     })
-    cred = credentials.Certificate(cred_initialize) 
-    # Replace with the correct path to your service account key
-    firebase_admin.initialize_app(cred)
+    firebase_admin.initialize_app(cred_initialize)
 
 # Create a Firestore client
 db = firestore.client()
