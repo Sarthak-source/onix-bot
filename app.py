@@ -5,9 +5,14 @@ from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
 import google.generativeai as genai
+from flask_cors import CORS
+
+
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
+
 print('bot-says-hello-world')
 
 # Initialize Firebase Admin SDK
@@ -27,8 +32,22 @@ firebase_credentials = {
 if not firebase_admin._apps:
     firebase_admin.initialize_app(credentials.Certificate(firebase_credentials))
 
+
 # Create a Firestore client
 db = firestore.client()
+# Function to read the most recent uploaded data from Firestore
+def read_recent_uploaded_data():
+    collection_name = 'onix_data'
+    recent_doc = db.collection(collection_name).order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
+    
+    for doc in recent_doc:
+        data = doc.to_dict()
+        logging.info(f"Recent data length: {len(data)}")
+        return data
+    return None
+
+model = genai.GenerativeModel('gemini-1.5-flash')
+recent_data = read_recent_uploaded_data()
 
 # Configure the Gemini API
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
@@ -40,7 +59,6 @@ def chunk_text(text, chunk_size=500):
 
 # Function to answer questions using Google Gemini
 def answer_question(question, text):
-    model = genai.GenerativeModel('gemini-1.5-flash')  # Ensure the model is defined
     for chunk in chunk_text(text):
         try:
             # Call the Gemini model
@@ -53,17 +71,6 @@ def answer_question(question, text):
         except Exception as e:
             logging.error('Error during text generation: %s', str(e))
     return "No answer found", ""
-
-# Function to read the most recent uploaded data from Firestore
-def read_recent_uploaded_data():
-    collection_name = 'onix_data'
-    recent_doc = db.collection(collection_name).order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
-    
-    for doc in recent_doc:
-        data = doc.to_dict()
-        logging.info(f"Recent data length: {len(data)}")
-        return data
-    return None
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -79,7 +86,6 @@ def ask_question_api():
         return jsonify({'error': 'No question provided'}), 400
 
     try:
-        recent_data = read_recent_uploaded_data()
         if not recent_data:
             return jsonify({'error': 'No recent data found'}), 404
 
