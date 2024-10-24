@@ -1,4 +1,7 @@
 Flask
+Flask-CORS
 firebase-admin
 google-generativeai
-flask_cors
+numpy
+scikit-learn
+sentence-transformers
