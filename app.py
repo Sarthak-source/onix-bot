@@ -1,14 +1,10 @@
 import os
 import logging
-import gc
 from flask import Flask, request, jsonify
 import firebase_admin
 from firebase_admin import credentials, firestore
 import google.generativeai as genai
 from flask_cors import CORS
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
-from sentence_transformers import SentenceTransformer
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -47,57 +43,18 @@ def read_recent_uploaded_data():
         return data
     return None
 
-# Initialize Google Gemini model
-model = genai.GenerativeModel('gemini-1.5-flash')
-recent_data = read_recent_uploaded_data()
-
 # Configure the Gemini API
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
-
-# Load the embedding model
-embedding_model = SentenceTransformer('all-MiniLM-L6-v2')  # Example model, you can choose another one
+# Initialize Google Gemini model
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Function to chunk text into semantically relevant pieces
-def chunk_text(text, chunk_size=500, similarity_threshold=0.8):
-    sentences = text.split('.')  # Split text into sentences
-    chunks = []
-    current_chunk = ""
-
-    for sentence in sentences:
-        if len(current_chunk) + len(sentence) <= chunk_size:
-            current_chunk += sentence + '.'
-        else:
-            if current_chunk:
-                chunks.append(current_chunk.strip())
-            current_chunk = sentence + '.'
-
-            # If we reach the chunk_size, save the chunk
-            if len(current_chunk) > chunk_size:
-                chunks.append(current_chunk.strip())
-                current_chunk = ""
-
-    # Don't forget to add the last chunk if it exists
-    if current_chunk:
-        chunks.append(current_chunk.strip())
-
-    # Compute embeddings for each chunk
-    embeddings = embedding_model.encode(chunks)
-
-    # Filter chunks based on cosine similarity
-    filtered_chunks = []
-    for i in range(len(embeddings)):
-        if len(filtered_chunks) == 0:
-            filtered_chunks.append(chunks[i])
-        else:
-            similarity = cosine_similarity([embeddings[i]], [embeddings[len(filtered_chunks)-1]])
-            if similarity < similarity_threshold:
-                filtered_chunks.append(chunks[i])
-
-    return filtered_chunks
+def chunk_text(text):
+    return [text.strip()]
 
 # Function to answer questions using Google Gemini
 def answer_question(question, text):
-    chunks = chunk_text(text)  # Use the advanced chunk_text function
+    chunks = chunk_text(text)
 
     for chunk in chunks:
         try:
@@ -124,6 +81,7 @@ def ask_question_api():
         return jsonify({'error': 'No question provided'}), 400
 
     try:
+        recent_data = read_recent_uploaded_data()
         if not recent_data:
             return jsonify({'error': 'No recent data found'}), 404
 
@@ -140,9 +98,6 @@ def ask_question_api():
     except Exception as e:
         logging.error('Error processing question: %s', str(e), exc_info=True)
         return jsonify({'error': 'An error occurred while processing your request.'}), 500
-
-    finally:
-        gc.collect()
 
 # Run the Flask app
 if __name__ == '__main__':

@@ -2,6 +2,3 @@ Flask
 Flask-CORS
 firebase-admin
 google-generativeai
-numpy
-scikit-learn
-sentence-transformers
