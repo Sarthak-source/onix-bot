@@ -70,7 +70,10 @@ def get_vector_store(text_chunks):
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
     
-    
+raw_text = read_recent_uploaded_data()
+text_chunks = get_text_chunks(raw_text)
+get_vector_store(text_chunks)
+
 def get_conversational_chain():
 
     prompt_template = """
