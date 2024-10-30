@@ -59,7 +59,7 @@ genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 # Function to chunk text into semantically relevant pieces
 # def chunk_text(text):
-#     return [text.strip()]
+#     return [text.strip()] 
 
 def get_text_chunks(text):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
@@ -73,6 +73,7 @@ def get_vector_store(text_chunks):
     
 raw_text = read_recent_uploaded_data()
 text_chunks = get_text_chunks(raw_text.get('combined_text', ''))
+#get_text_chunks(raw_text.get('combined_text', ''))
 get_vector_store(text_chunks)
 
 def get_conversational_chain():
