@@ -5,6 +5,14 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 import google.generativeai as genai
 from flask_cors import CORS
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
+import google.generativeai as genai
+from langchain_community.vectorstores import FAISS
+from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain.chains.question_answering import load_qa_chain
+from langchain.prompts import PromptTemplate
+#from dotenv import load_dotenv
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -46,26 +54,58 @@ def read_recent_uploaded_data():
 # Configure the Gemini API
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 # Initialize Google Gemini model
-model = genai.GenerativeModel('gemini-1.5-flash')
+#model = genai.GenerativeModel('gemini-1.5-flash')
 
 # Function to chunk text into semantically relevant pieces
-def chunk_text(text):
-    return [text.strip()]
+# def chunk_text(text):
+#     return [text.strip()]
 
-# Function to answer questions using Google Gemini
-def answer_question(question, text):
-    chunks = chunk_text(text)
+def get_text_chunks(text):
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
+    chunks = text_splitter.split_text(text)
+    return chunks
 
-    for chunk in chunks:
-        try:
-            # Call the Gemini model
-            response = model.generate_content([question, chunk])
-            answer = response.text
-            if answer:
-                return answer, chunk
-        except Exception as e:
-            logging.error('Error during text generation: %s', str(e))
-    return "No answer found", ""
+def get_vector_store(text_chunks):
+    embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+    vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
+    vector_store.save_local("faiss_index")
+    
+    
+def get_conversational_chain():
+
+    prompt_template = """
+    Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not in
+    provided context just say, "answer is not available in the context", don't provide the wrong answer\n\n
+    Context:\n {context}?\n
+    Question: \n{question}\n
+
+    Answer:
+    """
+
+    model = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0.3)
+
+    prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
+    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
+
+    return chain
+
+def user_input(user_question):
+    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+    
+    # Load FAISS index with the allow_dangerous_deserialization parameter set to True
+    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+    docs = new_db.similarity_search(user_question)
+
+    chain = get_conversational_chain()
+
+    response = chain(
+        {"input_documents": docs, "question": user_question},
+        return_only_outputs=True
+    )
+
+    print(response)
+    return response
+
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -85,13 +125,19 @@ def ask_question_api():
         if not recent_data:
             return jsonify({'error': 'No recent data found'}), 404
 
-        combined_text = recent_data.get('combined_text', '')
-        answer, relevant_chunk = answer_question(question, combined_text)
+        #combined_text = recent_data.get('combined_text', '')
+
+        # Call user_input to get the answer
+        user_input(question)
+
+        # You may need to modify user_input to return a meaningful response
+        # If user_input directly prints, you might want to adjust that logic.
+        # Assuming user_input is modified to return the answer instead of printing it.
+        answer_response = user_input(question)
 
         response = {
             'question': question,
-            'answer': answer,
-            'relevant_chunk': relevant_chunk
+            'answer': answer_response  # Adjust based on the return value of user_input
         }
         return jsonify(response)
 

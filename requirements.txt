@@ -2,3 +2,5 @@ Flask
 Flask-CORS
 firebase-admin
 google-generativeai
+langchain
+langchain-google-genai
