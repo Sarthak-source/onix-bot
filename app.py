@@ -54,6 +54,8 @@ def read_recent_uploaded_data():
 
 # Configure the Gemini API
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+print(os.getenv('GOOGLE_API_KEY'))
+
 # Initialize Google Gemini model
 #model = genai.GenerativeModel('gemini-1.5-flash')
 
