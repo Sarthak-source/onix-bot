@@ -44,7 +44,6 @@ embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
 model = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0.3)
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
-embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
 collection_name = 'onix_data'
 prompt_template = """
