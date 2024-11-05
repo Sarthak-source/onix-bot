@@ -48,7 +48,7 @@ genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 collection_name = 'onix_data'
 prompt_template = """
-    Use the information provided in the context to answer the question as thoroughly as possible. If the exact answer is not available, do not guess. Instead, provide a list of the nearest matches from the context along with related terms or concepts that could be useful. 
+    Use the information provided in the context to answer the question as thoroughly as possible. If the exact answer is not available, do not guess. Instead, provide a list of the nearest matches from the context along with related terms or concepts that could be useful.
 
     Context:
     {context}
@@ -56,7 +56,7 @@ prompt_template = """
     Question:
     {question}
 
-    Nearest matches and related terms:
+    If the exact answer is not available, here are some matching terms and related concepts:
     """
 
 # Function to read the most recent uploaded data from Firestore
