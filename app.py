@@ -43,7 +43,7 @@ if not firebase_admin._apps:
 db = firestore.client()
 embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.7)
+model = ChatGoogleGenerativeAI(model="gemini-pro", temperature=0.9)
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 collection_name = 'onix_data'
