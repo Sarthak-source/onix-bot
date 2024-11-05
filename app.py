@@ -44,7 +44,6 @@ embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
 model = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0.3)
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
-text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
 collection_name = 'onix_data'
 prompt_template = """
     Answer the question as thoroughly as possible using the information provided in the context. If the exact answer is not available, do not guess. Instead, provide a list of related terms or concepts from the context that could be useful. If there are no relevant matches at all, explicitly state, "Answer is not available in the context."
@@ -70,6 +69,7 @@ def read_recent_uploaded_data():
 
 
 def get_text_chunks(text):
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
     chunks = text_splitter.split_text(text)
     return chunks
 
