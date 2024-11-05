@@ -47,6 +47,17 @@ genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
 collection_name = 'onix_data'
+prompt_template = """
+    Answer the question as thoroughly as possible using the information provided in the context. If the exact answer is not available, do not guess. Instead, provide a list of related terms or concepts from the context that could be useful. If there are no relevant matches at all, explicitly state, "Answer is not available in the context."
+
+    Context:
+    {context}
+
+    Question:
+    {question}
+
+    Answer (or related terms if answer is not available):
+    """
 
 # Function to read the most recent uploaded data from Firestore
 def read_recent_uploaded_data():
@@ -73,19 +84,6 @@ text_chunks = get_text_chunks(raw_text.get('combined_text', ''))
 get_vector_store(text_chunks)
 
 def get_conversational_chain():
-
-    prompt_template = """
-    Answer the question as thoroughly as possible using the information provided in the context. If the exact answer is not available, do not guess. Instead, provide a list of related terms or concepts from the context that could be useful. If there are no relevant matches at all, explicitly state, "Answer is not available in the context."
-
-    Context:
-    {context}
-
-    Question:
-    {question}
-
-    Answer (or related terms if answer is not available):
-    """
-
     prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
 
