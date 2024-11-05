@@ -141,8 +141,7 @@ def ask_question_api():
         return jsonify({'error': 'No question provided'}), 400
 
     try:
-        recent_data = read_recent_uploaded_data()
-        if not recent_data:
+        if not raw_text:
             return jsonify({'error': 'No recent data found'}), 404
 
         # Retrieve the previous context from the session
@@ -150,6 +149,11 @@ def ask_question_api():
         
         # Add the new question to the history
         session['conversation_history'].append(f"Q: {question}")  # Store the user's question
+
+        # Check and limit conversation history length
+        MAX_HISTORY_LENGTH = 10  # Set your desired maximum length
+        if len(session['conversation_history']) > MAX_HISTORY_LENGTH:
+            session['conversation_history'].pop(0)  # Remove the oldest entry if limit is exceeded
 
         # Combine previous context and the new question for generating the response
         combined_context = previous_context + "\n" + f"Q: {question}\n"  # Prepare context for model
@@ -159,6 +163,10 @@ def ask_question_api():
 
         # Store the answer in the conversation history
         session['conversation_history'].append(f"A: {answer_response['output_text']}")  # Store the generated answer
+
+        # Check and limit conversation history length again
+        if len(session['conversation_history']) > MAX_HISTORY_LENGTH:
+            session['conversation_history'].pop(0)  # Remove the oldest entry if limit is exceeded again
 
         # Include combined context when responding
         response = {
