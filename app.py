@@ -40,10 +40,16 @@ if not firebase_admin._apps:
 
 # Create a Firestore client
 db = firestore.client()
+embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
+new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+model = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0.3)
+genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
+embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
+text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
+collection_name = 'onix_data'
 
 # Function to read the most recent uploaded data from Firestore
 def read_recent_uploaded_data():
-    collection_name = 'onix_data'
     recent_doc = db.collection(collection_name).order_by('timestamp', direction=firestore.Query.DESCENDING).limit(1).stream()
     
     for doc in recent_doc:
@@ -52,24 +58,12 @@ def read_recent_uploaded_data():
         return data
     return None
 
-# Configure the Gemini API
-genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
-print(os.getenv('GOOGLE_API_KEY'))
-
-# Initialize Google Gemini model
-#model = genai.GenerativeModel('gemini-1.5-flash')
-
-# Function to chunk text into semantically relevant pieces
-# def chunk_text(text):
-#     return [text.strip()] 
 
 def get_text_chunks(text):
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size=10000, chunk_overlap=1000)
     chunks = text_splitter.split_text(text)
     return chunks
 
 def get_vector_store(text_chunks):
-    embeddings = GoogleGenerativeAIEmbeddings(model = "models/embedding-001")
     vector_store = FAISS.from_texts(text_chunks, embedding=embeddings)
     vector_store.save_local("faiss_index")
     
@@ -81,30 +75,28 @@ get_vector_store(text_chunks)
 def get_conversational_chain():
 
     prompt_template = """
-    Answer the question as detailed as possible from the provided context, make sure to provide all the details, if the answer is not in
-    provided context just say, "answer is not available in the context", don't provide the wrong answer\n\n
-    Context:\n {context}?\n
-    Question: \n{question}\n
+    Answer the question as thoroughly as possible using the information provided in the context. If the exact answer is not available, do not guess. Instead, provide a list of related terms or concepts from the context that could be useful. If there are no relevant matches at all, explicitly state, "Answer is not available in the context."
 
-    Answer:
+    Context:
+    {context}
+
+    Question:
+    {question}
+
+    Answer (or related terms if answer is not available):
     """
-
-    model = ChatGoogleGenerativeAI(model="gemini-pro",temperature=0.3)
 
     prompt = PromptTemplate(template = prompt_template, input_variables = ["context", "question"])
     chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
 
     return chain
 
+
+chain = get_conversational_chain()
+
 def user_input(user_question):
-    embeddings = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
-    
-    # Load FAISS index with the allow_dangerous_deserialization parameter set to True
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
     docs = new_db.similarity_search(user_question)
-
-    chain = get_conversational_chain()
-
+    # Load FAISS index with the allow_dangerous_deserialization parameter set to True
     response = chain(
         {"input_documents": docs, "question": user_question},
         return_only_outputs=True
