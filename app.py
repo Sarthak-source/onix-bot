@@ -69,9 +69,9 @@ prompt_template = """
     - Based on the context, answer the question in a natural, engaging way.
     - If detailed elaboration is needed, provide key insights, supporting ideas, and useful terms with appropriate emojis to highlight them. 
     - For simpler answers, keep it concise and to the point.
-    - Make sure the answer feels conversational, as if you're chatting with a friend.
+    - Ensure the answer is easy to digest at a single glance and feels conversational, as if you're chatting with a friend.
 
-    Try to generate the response dynamically by understanding the level of detail required and keep it readable.
+    Try to generate the response dynamically by understanding the level of detail required and make sure it's readable at a glance.
 """
 
 
