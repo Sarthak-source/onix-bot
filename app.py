@@ -57,7 +57,7 @@ genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 collection_name = 'onix_data'
 prompt_template = """
-    Use the information provided in the context to answer the question as thoroughly as possible. If the exact answer is not available, do not guess. Instead, provide a list of the nearest matches from the context along with related terms or concepts that could be useful.
+    Use the context provided to answer the question in a friendly, conversational tone. Keep the response lively and engaging. Where possible, break down the answer into clear, easy-to-read points and include relevant emojis to highlight each point.
 
     Context:
     {context}
@@ -65,7 +65,14 @@ prompt_template = """
     Question:
     {question}
 
-    If the exact answer is not available, here are some matching terms and related concepts:
+    If you don’t have the exact answer, provide the closest information or related concepts in a helpful and engaging way with relevant pointers and emojis for each item. Here’s a sample format to follow:
+
+    Answer:
+    - 💡 Key Insight: [Add main point here]
+    - 🔍 Related Idea: [Add supporting or additional idea]
+    - 📌 Useful Term: [Add relevant term or related concept]
+
+    Try to make the conversation feel natural, as if you're chatting with a friend!
     """
 
 # Function to read the most recent uploaded data from Firestore
