@@ -57,7 +57,7 @@ genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 collection_name = 'onix_data'
 prompt_template = """
-    Use the context provided to answer the question in a friendly, conversational tone. Keep the response lively and engaging. Where possible, break down the answer into clear, easy-to-read points and include relevant emojis to highlight each point.
+    Use the context provided to answer the question in a friendly, conversational tone. Keep the response lively and engaging. If the answer requires more detail, break it down into clear, easy-to-read points with relevant emojis. For simpler questions, provide a brief and concise response without too much elaboration.
 
     Context:
     {context}
@@ -65,7 +65,7 @@ prompt_template = """
     Question:
     {question}
 
-    If you don’t have the exact answer, provide the closest information or related concepts in a helpful and engaging way with relevant pointers and emojis for each item. Here’s a sample format to follow:
+    If you don’t have the exact answer, provide the closest information or related concepts in a helpful and engaging way with relevant pointers and emojis for each item. Here’s a sample format to follow, and don't give long answers, keep it simple and readable in single glances:
 
     Answer:
     - 💡 Key Insight: [Add main point here]
