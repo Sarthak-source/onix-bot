@@ -57,7 +57,7 @@ genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 collection_name = 'onix_data'
 prompt_template = """
-    Use the context provided to answer the question in a friendly, conversational tone. Keep the response lively and engaging. If the answer requires more detail, break it down into clear, easy-to-read points with relevant emojis. For simpler questions, provide a brief and concise response without too much elaboration.
+    Use the context provided to answer the question in a friendly, conversational tone. Keep the response lively and engaging. If the answer requires more detail, break it into clear, easy-to-read points with relevant emojis. For simpler questions, provide a brief and concise response—easy to read at a single glance.
 
     Context:
     {context}
@@ -65,15 +65,15 @@ prompt_template = """
     Question:
     {question}
 
-    If you don’t have the exact answer, provide the closest information or related concepts in a helpful and engaging way with relevant pointers and emojis for each item. Here’s a sample format to follow, and don't give long answers, keep it simple and readable in single glances:
-
     Answer:
-    - 💡 Key Insight: [Add main point here]
-    - 🔍 Related Idea: [Add supporting or additional idea]
-    - 📌 Useful Term: [Add relevant term or related concept]
+    - Based on the context, answer the question in a natural, engaging way.
+    - If detailed elaboration is needed, provide key insights, supporting ideas, and useful terms with appropriate emojis to highlight them. 
+    - For simpler answers, keep it concise and to the point.
+    - Make sure the answer feels conversational, as if you're chatting with a friend.
 
-    Try to make the conversation feel natural, as if you're chatting with a friend!
-    """
+    Try to generate the response dynamically by understanding the level of detail required and keep it readable.
+"""
+
 
 # Function to read the most recent uploaded data from Firestore
 def read_recent_uploaded_data():
