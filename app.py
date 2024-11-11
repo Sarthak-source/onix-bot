@@ -70,7 +70,8 @@ prompt_template = """
     - If detailed elaboration is needed, provide key insights, supporting ideas, and useful terms with appropriate emojis to highlight them, and limit to 5 points.
     - For simpler answers, keep it concise and to the point.
     - Ensure the answer is easy to digest at a single glance and feels conversational, as if you're chatting with a friend.
-    - Aim for a response length between 150 and 250 words.
+    - Aim for a response length between 50 and 100 words.
+    - If the question isn't specific to the document, engage in friendly, casual conversation to keep the interaction warm and approachable.
 
     Try to generate the response dynamically by understanding the level of detail required and make sure it's readable at a glance.
 """
