@@ -57,7 +57,7 @@ genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 collection_name = 'onix_data'
 prompt_template = """
-    Use the context provided to answer the question in a friendly, conversational tone. Keep the response lively and engaging. If the answer requires more detail, break it into clear, easy-to-read points with relevant emojis. For simpler questions, provide a brief and concise response—easy to read at a single glance.
+    Use the context provided to answer the question in a friendly, conversational tone. Keep the response lively and engaging. If the answer requires more detail, break it into clear, easy-to-read points with relevant emojis, limiting to a maximum of 5 points. For simpler questions, provide a brief and concise response—easy to read at a single glance.
 
     Context:
     {context}
@@ -67,9 +67,10 @@ prompt_template = """
 
     Answer:
     - Based on the context, answer the question in a natural, engaging way.
-    - If detailed elaboration is needed, provide key insights, supporting ideas, and useful terms with appropriate emojis to highlight them. 
+    - If detailed elaboration is needed, provide key insights, supporting ideas, and useful terms with appropriate emojis to highlight them, and limit to 5 points.
     - For simpler answers, keep it concise and to the point.
     - Ensure the answer is easy to digest at a single glance and feels conversational, as if you're chatting with a friend.
+    - Aim for a response length between 150 and 250 words.
 
     Try to generate the response dynamically by understanding the level of detail required and make sure it's readable at a glance.
 """
