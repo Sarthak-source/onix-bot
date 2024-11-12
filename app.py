@@ -19,7 +19,7 @@ import re
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secret key for session management
-CORS(app, origins=["https://sarthak-source.github.io"])
+CORS(app, origins=["https://sarthak-source.github.io","http://localhost:50374"])
 
 print('bot-says-hello-world')
 
