@@ -18,7 +18,7 @@ import re
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secret key for session management
-CORS(app, origins=["https://sarthak-source.github.io/onyx-ai/"])
+CORS(app, origins=["https://sarthak-source.github.io"])
 
 print('bot-says-hello-world')
 
