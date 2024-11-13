@@ -15,7 +15,6 @@ from langchain_community.vectorstores import FAISS
 import json
 import re
 
-
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secret key for session management
@@ -72,6 +71,7 @@ prompt_template = """
     {question}
 
     **Answer**:
+    - Answer as if you are software that is talking about itself and what are is given in **context**, responds in the first person, speaking directly as the Onyx system.
     - Based on the **context**, answer the **question** in a natural, engaging way.
     - If detailed elaboration is needed, provide key insights, supporting ideas, and useful terms with appropriate **emojis** to highlight them, and limit to 5 points.
     - For simpler answers, keep it concise and to the point.
@@ -91,12 +91,13 @@ Available intents and routes/actions:
 - "show customer orders" or "open orders screen" → intent: "open_screen_command", route: "/orders"
 - "view dashboard" or "open dashboard" → intent: "open_screen_command", route: "/dashboard"
 - "open settings" or "show settings screen" → intent: "open_screen_command", route: "/settings"
-- "get details for order order number" → intent: "view_order_details", action: "lookup_order", order_number: " order number"
+- "get details for order order number" → intent: "view_order_details", action: "lookup_order", order_number: "order number"
 - "update details order status" or "change order status to status number" → intent: "update_order_status", action: "update_status", status: "status no"
+- "show previous orders" or "display last orders" → intent: "view_previous_orders", action: "list_recent_orders", limit: 5
 
 If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action.
-And if update or open commands do not mention specific number ask with a friendly tone to provide the number, if number is mentioned just say the action completed
-If action is performed give further action link open order page directly 
+And if update or open commands do not mention specific number ask with a friendly tone to provide the number, if number is mentioned just say the action completed.
+If action is performed give further action link open order page directly.
 
 Question: {question}
 
@@ -229,6 +230,28 @@ def update_order_status(status):
         return f"Order status has been updated to: {status}"
     else:
         return "No status provided, order status not updated."
+    
+def view_previous_orders():
+    # Placeholder data for the last five orders
+    orders = [
+        {"order_number": "12345", "date": "2024-11-12", "status": "Delivered", "total": "$150.00"},
+        {"order_number": "12344", "date": "2024-11-10", "status": "Processing", "total": "$320.50"},
+        {"order_number": "12343", "date": "2024-11-08", "status": "Shipped", "total": "$225.99"},
+        {"order_number": "12342", "date": "2024-11-05", "status": "Cancelled", "total": "$90.00"},
+        {"order_number": "12341", "date": "2024-11-02", "status": "Delivered", "total": "$180.75"},
+    ]
+
+    # Display the list of orders
+    orders_display = "Here are your last 5 orders:\n"
+    for order in orders:
+        orders_display += (
+            f"Order Number: {order['order_number']}, "
+            f"Date: {order['date']}, "
+            f"Status: {order['status']}, "
+            f"Total: {order['total']}\n"
+        )
+        
+    return f"{orders_display}"
 
 # API route to handle questions and return answers
 @app.route('/ask', methods=['POST'])
@@ -288,6 +311,15 @@ def ask_question_api():
                 'question': question,
                 'intent': intent_log,
                 'answer': f"{update_status_result}\n\n{intent_log['message']}"
+            })
+            
+        elif intent_log['intent'] == 'view_previous_orders':
+            view_previous_order=view_previous_orders()
+            return jsonify({
+                'session_id': session['session_id'],
+                'question': question,
+                'intent': intent_log,
+                'answer': f"Here are last 5 order {view_previous_order}"
             })
 
         elif intent_log['intent'] == 'end_conversation':
