@@ -78,27 +78,31 @@ prompt_template = """
     - Ensure the answer is easy to digest at a single glance and feels conversational, as if you're chatting with a friend.
     - Aim for a response length between 50 and 100 words.
     - If the **question** isn't specific, engage in friendly, casual conversation to keep the interaction warm and approachable.
+    - "end conversation" or "thank you" is in **question** something similar say "You’re welcome! If you need more assistance, feel free to reach out. Have a great day!" or something matching this sentence
 
     Try to generate the response dynamically by understanding the level of detail required and make sure it's readable at a glance. No reference needs to be made to the documents or any source material
 """
 
 intent_prompt = """
-Given a user question, determine the intent and, if it is related to opening a specific screen, return both "open_screen_command" as the intent and the corresponding route.
+Given a user question, determine the intent and, if it is related to opening a specific screen or performing an action, return the intent along with any necessary details such as the route or action type, have a friendly tone and use appropriate emojis.
 
-Available routes:
-- "open logs screen" or "show logs" → route: "/logs"
-- "show customer orders" or "open orders screen" → route: "/orders"
-- "view dashboard" or "open dashboard" → route: "/dashboard"
-- "open settings" or "show settings screen" → route: "/settings"
+Available intents and routes/actions:
+- "open logs screen" or "show logs" → intent: "open_screen_command", route: "/logs"
+- "show customer orders" or "open orders screen" → intent: "open_screen_command", route: "/orders"
+- "view dashboard" or "open dashboard" → intent: "open_screen_command", route: "/dashboard"
+- "open settings" or "show settings screen" → intent: "open_screen_command", route: "/settings"
+- "get details for order order number" → intent: "view_order_details", action: "lookup_order", order_number: " order number"
+- "update details order status" or "change order status to status number" → intent: "update_order_status", action: "update_status", status: "status no"
 
-If the question does not relate to a screen command, classify it as either "command" or "question" and do not return a route.
+If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action.
+And if update or open commands do not mention specific number ask with a friendly tone to provide the number, if number is mentioned just say the action completed
+If action is performed give further action link open order page directly 
 
 Question: {question}
+
 Respond with a JSON object containing the intent and, if applicable, the route, structured as follows.
 """
 
-import json
-import re
 
 def process_command(question):
     # Create the prompt template
@@ -210,6 +214,21 @@ def initialize_session():
         session['session_id'] = str(uuid.uuid4())  # Generate a random session ID
         session['conversation_history'] = []  # Initialize conversation history
         logger.info(f"Session initialized with ID: {session['session_id']}")
+        
+def get_order_details(order_number):
+    # Simulate fetching order details based on order number
+    if order_number != 'unknown':
+        # You can replace this with actual logic to fetch order details from a database or API
+        return f"Here are the details for Order {order_number}: \nCustomer Name: Acme Corporation \nOrder Status: Processing \nOrder Date: November 10, 2024 \nItems: 100 units of Product X, \n50 units of Product Y \nTotal Amount: $3,000 \nEstimated Delivery: November 20, 2024 \nAssigned Representative: Sarah L."
+    else:
+        return ""  # Return empty string if no order details are found or order_number is unknown
+def update_order_status(status):
+    if status:
+        # Simulate updating the order status
+        # Replace this with actual logic for updating order status in a system
+        return f"Order status has been updated to: {status}"
+    else:
+        return "No status provided, order status not updated."
 
 # API route to handle questions and return answers
 @app.route('/ask', methods=['POST'])
@@ -224,64 +243,86 @@ def ask_question_api():
         return jsonify({'error': 'No question provided'}), 400
 
     try:
-        if not raw_text:
-            return jsonify({'error': 'No recent data found'}), 404
+        # Retrieve previous context from the session
+        previous_context = "\n".join(session['conversation_history'])
 
-        # Retrieve the previous context from the session
-        previous_context = "\n".join(session['conversation_history'])  # Join previous questions and answers
-        
         # Add the new question to the history
-        session['conversation_history'].append(f"Q: {question}")  # Store the user's question
+        session['conversation_history'].append(f"Q: {question}")
 
-        # Check and limit conversation history length
-        MAX_HISTORY_LENGTH = 10  # Set your desired maximum length
+        # Limit conversation history length
+        MAX_HISTORY_LENGTH = 10
         if len(session['conversation_history']) > MAX_HISTORY_LENGTH:
-            session['conversation_history'].pop(0)  # Remove the oldest entry if limit is exceeded
+            session['conversation_history'].pop(0)
 
         # Combine previous context and the new question for generating the response
-        combined_context = previous_context + "\n" + f"Q: {question}\n"  # Prepare context for model
+        combined_context = previous_context + "\n" + f"Q: {question}\n"
 
         # Get the intent from the question
         intent_log = process_command(question)
         print("Result intent_log:", intent_log)
 
-        # Check if the intent is 'open_screen_command' and handle accordingly
+        # Handle different intents
         if intent_log['intent'] == 'open_screen_command':
-            # Skip further processing if intent is 'open_screen_command'
             return jsonify({
-                'session_id': session['session_id'],  # Include the session ID in the response
+                'session_id': session['session_id'],
                 'question': question,
                 'intent': intent_log,
-                'answer': 'Screen open command processed successfully'
+                #'answer': intent_log['message']
             })
 
-        # If the intent is not 'open_screen_command', continue with normal processing
-        answer_response = user_input(question)
+        elif intent_log['intent'] == 'view_order_details':
+            order_number = intent_log.get('order_number', 'unknown')
+            order_details = get_order_details(order_number)
+            return jsonify({
+                'session_id': session['session_id'],
+                'question': question,
+                'intent': intent_log,
+                'answer': f"{order_details}\n\n{intent_log['message']}"
+            })
 
-        # Store the answer in the conversation history
-        session['conversation_history'].append(f"A: {answer_response['output_text']}")  # Store the generated answer
+        elif intent_log['intent'] == 'update_order_status':
+            status = intent_log.get('order_number', 'not specified')
+            update_status_result = update_order_status(status)
+            return jsonify({
+                'session_id': session['session_id'],
+                'question': question,
+                'intent': intent_log,
+                'answer': f"{update_status_result}\n\n{intent_log['message']}"
+            })
 
-        # Check and limit conversation history length again
-        if len(session['conversation_history']) > MAX_HISTORY_LENGTH:
-            session['conversation_history'].pop(0)  # Remove the oldest entry if limit is exceeded again
+        elif intent_log['intent'] == 'end_conversation':
+            return jsonify({
+                'session_id': session['session_id'],
+                'question': question,
+                'intent': intent_log,
+                'answer': "Thank you for chatting! If you have more questions, feel free to ask."
+            })
 
-        # Include combined context when responding
-        response = {
-            'session_id': session['session_id'],  # Include the session ID in the response
-            'question': question,
-            'answer': answer_response,
-            'conversation_history': session['conversation_history'],  # Include the conversation history
-            'combined_context': combined_context,  # Include the combined context for debugging
-            'intent': intent_log
-        }
-        
-        logger.info(f"Response sent: {response}")
-        return jsonify(response)
+        else:
+            # Default handling for questions that don’t match any specific intent
+            intent_log['intent'] = 'question'  # Explicitly set the intent to 'question'
+            answer_response = user_input(question)  # Generate a general answer
+            session['conversation_history'].append(f"A: {answer_response['output_text']}")
+
+            # Limit conversation history length again
+            if len(session['conversation_history']) > MAX_HISTORY_LENGTH:
+                session['conversation_history'].pop(0)
+
+            response = {
+                'session_id': session['session_id'],
+                'question': question,
+                'answer': answer_response,
+                'conversation_history': session['conversation_history'],
+                'combined_context': combined_context,
+                'intent': intent_log
+            }
+
+            logger.info(f"Response sent: {response}")
+            return jsonify(response)
 
     except Exception as e:
         logger.error('Error processing question: %s', str(e), exc_info=True)
         return jsonify({'error': 'An error occurred while processing your request.'}), 500
-
 
 # Run the Flask app
 if __name__ == '__main__':
