@@ -97,7 +97,7 @@ Available intents and routes/actions:
 
 If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action.
 And if update or open commands do not mention specific number ask with a friendly tone to provide the number, if number is mentioned just say the action completed.
-If action is performed give further action link open order page directly.
+If action is performed give further action link open order page directly. add https://github.com/Sarthak-source/onyx-ai before link
 
 Question: {question}
 
