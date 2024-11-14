@@ -99,14 +99,15 @@ If the question does not relate to these commands, classify it as either "comman
   - "show customer orders" or "open orders screen" → intent: `"open_screen_command"`, route: `"/orders"`,and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
   - "view dashboard" or "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
   - "open settings" or "show settings screen" → intent: `"open_screen_command"`, route: `"/settings"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
-  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`
+  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number], 'option' is new field with Yes or No in list, use emoji for visual appeal if yes send https://github.com/Sarthak-source/onyx-ai, if no ask do you need anything else `
   - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`
   - "show previous orders" or "display last orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`
 
 **Special Instructions:**
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
 - When a number is provided, confirm the action is completed.
-- After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`),And next to it in bold ask should I print Options next to option string put an emoji  in option field , Option yes or no, for example:- ['Yes ⚙️'], 
+- After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
+- And next to it in bold ask should I print
 - If none of the above mentioned in message please say I can't help with this, please ask something else
 
 **Question:** {question}
