@@ -18,7 +18,7 @@ import re
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secret key for session management
-CORS(app, origins=["https://sarthak-source.github.io","http://localhost:61776"])
+CORS(app, origins=["https://sarthak-source.github.io","http://localhost:61761"])
 
 print('bot-says-hello-world')
 
@@ -89,10 +89,10 @@ If the question does not relate to these commands, classify it as either "comman
 
 **Available intents and routes/actions:**
 - **General Prompt for Selection:**
-  If the command doesn’t include "open," "get," or "show previous" offer the user selection options, 
-  Give a list of string of either "open," "get," or "show previous" options next to option string put an emoji  in option field relevant to question ask, for example:- ['Access Settings ⚙️'], 
+  If the command doesn’t include "open," "get," or "show details of" offer the user selection options, 
+  Give a list of string of either "open," "get," or "show details of" options next to option string put an emoji  in option field relevant to question ask, for example:- ['Access Settings ⚙️'], 
   Give a message field → intent: `"select_intent_command"`
-  Default option is customer orders if nothing is mentioned after "open," "get," or "show previous"
+  Default option is customer orders if nothing is mentioned after
   
 - **Specific Commands:**
   - "open logs screen" or "show logs" → intent: `"open_screen_command"`, route: `"/logs"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
@@ -106,7 +106,7 @@ If the question does not relate to these commands, classify it as either "comman
 **Special Instructions:**
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
 - When a number is provided, confirm the action is completed.
-- After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
+- After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`), Options next to option string put an emoji  in option field , Option yes or no, for example:- ['Access Settings ⚙️'], 
 - If none of the above mentioned in message please say I can't help with this, please ask something else
 
 **Question:** {question}
@@ -257,10 +257,11 @@ def view_previous_orders():
     orders_display = "Here are your last 5 orders:\n"
     for order in orders:
         orders_display += (
+            f"•"
             f"Order Number: {order['order_number']}, "
             f"Date: {order['date']}, "
             f"Status: {order['status']}, "
-            f"Total: {order['total']}\n"
+            f"Total: {order['total']}\n\n"
         )
         
     return f"{orders_display}"
