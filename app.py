@@ -84,24 +84,34 @@ prompt_template = """
 """
 
 intent_prompt = """
-Given a user question, determine the intent and, if it is related to opening a specific screen or performing an action, return the intent along with any necessary details such as the route or action type, have a friendly tone and use appropriate emojis.
-
-Available intents and routes/actions:
-- "open logs screen" or "show logs" → intent: "open_screen_command", route: "/logs"
-- "show customer orders" or "open orders screen" → intent: "open_screen_command", route: "/orders"
-- "view dashboard" or "open dashboard" → intent: "open_screen_command", route: "/dashboard"
-- "open settings" or "show settings screen" → intent: "open_screen_command", route: "/settings"
-- "get details for order order number" → intent: "view_order_details", action: "lookup_order", order_number: "order number"
-- "update details order status" or "change order status to status number" → intent: "update_order_status", action: "update_status", status: "status no"
-- "show previous orders" or "display last orders" → intent: "view_previous_orders", action: "list_recent_orders", limit: 5
-
+Given a user question, determine the intent and, if it is related to opening a specific screen or performing an action, return the intent along with any necessary details such as the route or action type. Respond in a friendly tone and use appropriate emojis.
 If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action.
-And if update or open commands do not mention specific number ask with a friendly tone to provide the number, if number is mentioned just say the action completed.
-If action is performed give further action link open order page directly. add https://github.com/Sarthak-source/onyx-ai before link
 
-Question: {question}
+**Available intents and routes/actions:**
+- **General Prompt for Selection:**
+  If the command doesn’t include "open," "get," or "show previous" offer the user selection options, 
+  Give a list of string of either "open," "get," or "show previous" options next to option string put an emoji  in option field relevant to question ask, for example:- ['Access Settings ⚙️'], 
+  Give a message field → intent: `"select_intent_command"`
+  
+- **Specific Commands:**
+  - "open logs screen" or "show logs" → intent: `"open_screen_command"`, route: `"/logs"`
+  - "show customer orders" or "open orders screen" → intent: `"open_screen_command"`, route: `"/orders"`
+  - "view dashboard" or "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`
+  - "open settings" or "show settings screen" → intent: `"open_screen_command"`, route: `"/settings"`
+  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`
+  - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`
+  - "show previous orders" or "display last orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`
 
-Respond with a JSON object containing the intent and, if applicable, the route, structured as follows.
+**Special Instructions:**
+- If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
+- When a number is provided, confirm the action is completed.
+- After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
+
+**Question:** {question}
+
+**Response Format:**
+Return a JSON object containing the intent, and, if applicable, the route or action in the following structure.
+
 """
 
 
@@ -328,6 +338,14 @@ def ask_question_api():
                 'question': question,
                 'intent': intent_log,
                 'answer': "Thank you for chatting! If you have more questions, feel free to ask."
+            })
+            
+        elif intent_log['intent'] == 'select_intent_command':
+            return jsonify({
+                'session_id': session['session_id'],
+                'question': question,
+                'intent': intent_log,
+                'answer': intent_log['message'],
             })
 
         else:
