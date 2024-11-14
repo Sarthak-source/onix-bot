@@ -18,7 +18,7 @@ import re
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secret key for session management
-CORS(app, origins=["https://sarthak-source.github.io"])
+CORS(app, origins=["https://sarthak-source.github.io","http://localhost:61776"])
 
 print('bot-says-hello-world')
 
@@ -85,7 +85,7 @@ prompt_template = """
 
 intent_prompt = """
 Given a user question, determine the intent and, if it is related to opening a specific screen or performing an action, return the intent along with any necessary details such as the route or action type. Respond in a friendly tone and use appropriate emojis.
-If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action.
+If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action return intent.
 
 **Available intents and routes/actions:**
 - **General Prompt for Selection:**
@@ -94,10 +94,10 @@ If the question does not relate to these commands, classify it as either "comman
   Give a message field → intent: `"select_intent_command"`
   
 - **Specific Commands:**
-  - "open logs screen" or "show logs" → intent: `"open_screen_command"`, route: `"/logs"`
-  - "show customer orders" or "open orders screen" → intent: `"open_screen_command"`, route: `"/orders"`
-  - "view dashboard" or "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`
-  - "open settings" or "show settings screen" → intent: `"open_screen_command"`, route: `"/settings"`
+  - "open logs screen" or "show logs" → intent: `"open_screen_command"`, route: `"/logs"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
+  - "show customer orders" or "open orders screen" → intent: `"open_screen_command"`, route: `"/orders"`,and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
+  - "view dashboard" or "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
+  - "open settings" or "show settings screen" → intent: `"open_screen_command"`, route: `"/settings"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
   - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`
   - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`
   - "show previous orders" or "display last orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`
@@ -106,6 +106,7 @@ If the question does not relate to these commands, classify it as either "comman
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
 - When a number is provided, confirm the action is completed.
 - After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
+- If none of the above mentioned in message please say I can't help with this, please ask something else
 
 **Question:** {question}
 
