@@ -89,8 +89,8 @@ If the question does not relate to these commands, classify it as either "comman
 
 **Available intents and routes/actions:**
 - **General Prompt for Selection:**
-  If the command doesn’t include "open," "get," or "show details of" offer the user selection options, 
-  Give a list of string of either "open," "get," or "show details of" options next to option string put an emoji  in option field relevant to question ask, for example:- ['Access Settings ⚙️'], 
+  If the **command** doesn’t include "Previous" " Open" offer the user selection options, 
+  Give a list of string of either "Previous **command**" " Open **command**" options next to option string put an emoji  in option field relevant to question ask, for example:- ['Access Settings ⚙️'], 
   Give a message field → intent: `"select_intent_command"`
   Default option is customer orders if nothing is mentioned after
   
