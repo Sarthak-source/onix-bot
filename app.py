@@ -106,7 +106,7 @@ If the question does not relate to these commands, classify it as either "comman
 **Special Instructions:**
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
 - When a number is provided, confirm the action is completed.
-- After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`), Options next to option string put an emoji  in option field , Option yes or no, for example:- ['Access Settings ⚙️'], 
+- After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`),And next to it in bold ask should I print Options next to option string put an emoji  in option field , Option yes or no, for example:- ['Yes ⚙️'], 
 - If none of the above mentioned in message please say I can't help with this, please ask something else
 
 **Question:** {question}
@@ -232,7 +232,7 @@ def get_order_details(order_number):
     # Simulate fetching order details based on order number
     if order_number != 'unknown':
         # You can replace this with actual logic to fetch order details from a database or API
-        return f"Here are the details for Order {order_number}: \nCustomer Name: Acme Corporation \nOrder Status: Processing \nOrder Date: November 10, 2024 \nItems: 100 units of Product X, \n50 units of Product Y \nTotal Amount: $3,000 \nEstimated Delivery: November 20, 2024 \nAssigned Representative: Sarah L."
+        return f"Here are the details for Order {order_number}: \n•Customer Name: Acme Corporation \n•Order Status: Processing \n•Order Date: November 10, 2024 \n•Items: 100 units of Product X, \n•50 units of Product Y \n•Total Amount: $3,000 \n•Estimated Delivery: November 20, 2024 \n•Assigned Representative: Sarah L."
     else:
         return ""  # Return empty string if no order details are found or order_number is unknown
 def update_order_status(status):
@@ -257,11 +257,10 @@ def view_previous_orders():
     orders_display = "Here are your last 5 orders:\n"
     for order in orders:
         orders_display += (
-            f"•"
-            f"Order Number: {order['order_number']}, "
-            f"Date: {order['date']}, "
-            f"Status: {order['status']}, "
-            f"Total: {order['total']}\n\n"
+            f"•Order Number: {order['order_number']}, "
+            f"•Date: {order['date']}, "
+            f"•Status: {order['status']}, "
+            f"•Total: {order['total']}\n\n"
         )
         
     return f"{orders_display}"
