@@ -86,7 +86,6 @@ prompt_template = """
 """
 
 
-
 intent_prompt = """
 Given a user question, determine the intent and, if it is related to opening a specific screen or performing an action, return the intent along with any necessary details such as the route or action type. Respond in a friendly tone and use appropriate emojis.
 If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action return intent.
@@ -100,7 +99,7 @@ If the question does not relate to these commands, classify it as either "comman
 - **Specific Commands:**
   - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number], 'option' is new field with *Print customer order* or *Open customer order* in list of strings only, use emoji for options visual appeal if Open send 'https://onix-ix.firebaseapp.com', if Print send print [order number] give ask do you need anything else `
   - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`
-  - "show previous orders" or "display last orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`
+  - "show previous customer orders" or "display last customer orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`
 
 **Special Instructions:**
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
