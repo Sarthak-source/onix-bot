@@ -258,7 +258,7 @@ def view_previous_orders():
     orders_display = "Here are your last 5 orders:\n"
     for order in orders:
         orders_display += (
-            f"•Order Number: {order['order_number']}, "
+            f"•Order Number: #{order['order_number']}, "
             f"•Date: {order['date']}, "
             f"•Status: {order['status']}, "
             f"•Total: {order['total']}\n\n"
