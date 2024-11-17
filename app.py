@@ -106,67 +106,70 @@ If the question does not relate to these commands, classify it as either "comman
 **Special Instructions:**
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
 - When a number is provided, confirm the action is completed.
-- After completing an action, provide a link to open the order page directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+- After completing an action, provide a link to open the order page directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 - And next to it in bold ask should I print
 - If none of the above mentioned in message please say I can't help with this, please ask something else
 
 - **Dashboard:**
-  - "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`, and a message that provides a link to open the dashboard directly. (Link prefix: `https://onix-ix.firebaseapp.com`)
+  - "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`, and a message that provides a link to open the dashboard directly with two line information about what screen is about. (Link prefix: `https://onix-ix.firebaseapp.com`)
 
 - **Customers Orders:**
-  - "open all customer orders" → intent: `"open_screen_command"`, route: `"$tab/allCustomersOrders"`, and a message that provides a link to open the customer orders directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open new customer order" → intent: `"open_screen_command"`, route: `"$tab/newCustomerOrder"`, and a message that provides a link to open the new customer order screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open previous customer order" → intent: `"open_screen_command"`, route: `"$tab/previousCustomerOrder"`, and a message that provides a link to open the previous customer order screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open all customer orders" → intent: `"open_screen_command"`, route: `"tab/allCustomersOrders"`, and a message that provides a link to open the customer orders directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new customer order" → intent: `"open_screen_command"`, route: `"tab/newCustomerOrder"`, and a message that provides a link to open the new customer order screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open previous customer order" → intent: `"open_screen_command"`, route: `"tab/previousCustomerOrder"`, and a message that provides a link to open the previous customer order screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Sales Invoices:**
-  - "open all previous sales invoices" → intent: `"open_screen_command"`, route: `"$tab/allPreviousSalesInvoices"`, and a message that provides a link to open the previous sales invoices screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open new sales invoice" → intent: `"open_screen_command"`, route: `"$tab/newSaleInvoice"`, and a message that provides a link to open the new sales invoice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open previous sales invoice" → intent: `"open_screen_command"`, route: `"$tab/previousSaleInvoice"`, and a message that provides a link to open the previous sales invoice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open all previous sales invoices" → intent: `"open_screen_command"`, route: `"tab/allPreviousSalesInvoices"`, and a message that provides a link to open the previous sales invoices screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new sales invoice" → intent: `"open_screen_command"`, route: `"tab/newSaleInvoice"`, and a message that provides a link to open the new sales invoice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open previous sales invoice" → intent: `"open_screen_command"`, route: `"tab/previousSaleInvoice"`, and a message that provides a link to open the previous sales invoice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Sales Return Invoice:**
-  - "open all sales return invoices" → intent: `"open_screen_command"`, route: `"$tab/allSalesReturnInvoice"`, and a message that provides a link to open the all sales return invoices screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open new sales return invoice" → intent: `"open_screen_command"`, route: `"$tab/newSaleReturnInvoice"`, and a message that provides a link to open the new sales return invoice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open previous sales return invoice" → intent: `"open_screen_command"`, route: `"$tab/previousSaleReturnInvoice"`, and a message that provides a link to open the previous sales return invoice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open all sales return invoices" → intent: `"open_screen_command"`, route: `"tab/allSalesReturnInvoice"`, and a message that provides a link to open the all sales return invoices screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new sales return invoice" → intent: `"open_screen_command"`, route: `"tab/newSaleReturnInvoice"`, and a message that provides a link to open the new sales return invoice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open previous sales return invoice" → intent: `"open_screen_command"`, route: `"tab/previousSaleReturnInvoice"`, and a message that provides a link to open the previous sales return invoice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Quotation:**
-  - "open all previous quotations" → intent: `"open_screen_command"`, route: `"$tab/allPreviousQuotations"`, and a message that provides a link to open the previous quotations screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open new quotation" → intent: `"open_screen_command"`, route: `"$tab/newQuotation"`, and a message that provides a link to open the new quotation screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open previous quotation" → intent: `"open_screen_command"`, route: `"$tab/previousQuotation"`, and a message that provides a link to open the previous quotation screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open all previous quotations" → intent: `"open_screen_command"`, route: `"tab/allPreviousQuotations"`, and a message that provides a link to open the previous quotations screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new quotation" → intent: `"open_screen_command"`, route: `"tab/newQuotation"`, and a message that provides a link to open the new quotation screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open previous quotation" → intent: `"open_screen_command"`, route: `"tab/previousQuotation"`, and a message that provides a link to open the previous quotation screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Sales Return Request:**
-  - "open all sales return requests" → intent: `"open_screen_command"`, route: `"$tab/allSalesReturnRequest"`, and a message that provides a link to open the all sales return requests screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open new sales return request" → intent: `"open_screen_command"`, route: `"$tab/newSaleReturnRequest"`, and a message that provides a link to open the new sales return request screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open previous sales return request" → intent: `"open_screen_command"`, route: `"$tab/previousSaleReturnRequest"`, and a message that provides a link to open the previous sales return request screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open all sales return requests" → intent: `"open_screen_command"`, route: `"tab/allSalesReturnRequest"`, and a message that provides a link to open the all sales return requests screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new sales return request" → intent: `"open_screen_command"`, route: `"tab/newSaleReturnRequest"`, and a message that provides a link to open the new sales return request screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open previous sales return request" → intent: `"open_screen_command"`, route: `"tab/previousSaleReturnRequest"`, and a message that provides a link to open the previous sales return request screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Customers Notices:**
-  - "open all customers notices" → intent: `"open_screen_command"`, route: `"$tab/allCustomersNotices"`, and a message that provides a link to open the customers notices screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open new customer notice" → intent: `"open_screen_command"`, route: `"$tab/newCustomerNotice"`, and a message that provides a link to open the new customer notice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open previous customer notice" → intent: `"open_screen_command"`, route: `"$tab/previousCustomerNotice"`, and a message that provides a link to open the previous customer notice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open all customers notices" → intent: `"open_screen_command"`, route: `"tab/allCustomersNotices"`, and a message that provides a link to open the customers notices screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new customer notice" → intent: `"open_screen_command"`, route: `"tab/newCustomerNotice"`, and a message that provides a link to open the new customer notice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open previous customer notice" → intent: `"open_screen_command"`, route: `"tab/previousCustomerNotice"`, and a message that provides a link to open the previous customer notice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Sales Invoice Issuance Permission:**
-  - "open all sales invoice issuance permissions" → intent: `"open_screen_command"`, route: `"$tab/allSalesInvoiceIssuancePermission"`, and a message that provides a link to open the all sales invoice issuance permissions screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open new sales invoice issuance permission" → intent: `"open_screen_command"`, route: `"$tab/newSaleInvoiceIssuancePermission"`, and a message that provides a link to open the new sales invoice issuance permission screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open previous sales invoice issuance permission" → intent: `"open_screen_command"`, route: `"$tab/previousSaleInvoiceIssuancePermission"`, and a message that provides a link to open the previous sales invoice issuance permission screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open all sales invoice issuance permissions" → intent: `"open_screen_command"`, route: `"tab/allSalesInvoiceIssuancePermission"`, and a message that provides a link to open the all sales invoice issuance permissions screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new sales invoice issuance permission" → intent: `"open_screen_command"`, route: `"tab/newSaleInvoiceIssuancePermission"`, and a message that provides a link to open the new sales invoice issuance permission screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open previous sales invoice issuance permission" → intent: `"open_screen_command"`, route: `"tab/previousSaleInvoiceIssuancePermission"`, and a message that provides a link to open the previous sales invoice issuance permission screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Direct Sales Invoice:**
-  - "open new direct selling invoice" → intent: `"open_screen_command"`, route: `"$tab/newDirectSellingInvoiceScreen"`, and a message that provides a link to open the new direct selling invoice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open all direct selling invoices" → intent: `"open_screen_command"`, route: `"$tab/allDirectSellingInvoiceScreen"`, and a message that provides a link to open the all direct selling invoices screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
-  - "open previous direct selling invoice" → intent: `"open_screen_command"`, route: `"$tab/previousDirectSellingInvoiceScreen"`, and a message that provides a link to open the previous direct selling invoice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new direct selling invoice" → intent: `"open_screen_command"`, route: `"tab/newDirectSellingInvoiceScreen"`, and a message that provides a link to open the new direct selling invoice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open all direct selling invoices" → intent: `"open_screen_command"`, route: `"tab/allDirectSellingInvoiceScreen"`, and a message that provides a link to open the all direct selling invoices screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open previous direct selling invoice" → intent: `"open_screen_command"`, route: `"tab/previousDirectSellingInvoiceScreen"`, and a message that provides a link to open the previous direct selling invoice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Pay In Cash for Sales Return:**
-  - "open new pay in cash for sales return" → intent: `"open_screen_command"`, route: `"$tab/newPayInCashForSalesReturnScreen"`, and a message that provides a link to open the pay in cash for sales return screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new pay in cash for sales return" → intent: `"open_screen_command"`, route: `"tab/newPayInCashForSalesReturnScreen"`, and a message that provides a link to open the pay in cash for sales return screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Stocktaking of Direct Sales Return:**
-  - "open new stocktaking of direct sales return" → intent: `"open_screen_command"`, route: `"$tab/NewStocktakingOfDirectSalesReturn"`, and a message that provides a link to open the stocktaking of direct sales return screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new stocktaking of direct sales return" → intent: `"open_screen_command"`, route: `"tab/NewStocktakingOfDirectSalesReturn"`, and a message that provides a link to open the stocktaking of direct sales return screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Direct Selling Return Invoice Screen:**
-  - "open direct selling return invoice screen" → intent: `"open_screen_command"`, route: `"$tab/directSellingReturnInvoiceScreen"`, and a message that provides a link to open the direct selling return invoice screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open direct selling return invoice screen" → intent: `"open_screen_command"`, route: `"tab/directSellingReturnInvoiceScreen"`, and a message that provides a link to open the direct selling return invoice screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Clearing Cashiers Sales:**
-  - "open clearing cashiers sales" → intent: `"open_screen_command"`, route: `"$tab/clearingCashiersSales"`, and a message that provides a link to open the clearing cashiers sales screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open clearing cashiers sales" → intent: `"open_screen_command"`, route: `"tab/clearingCashiersSales"`, and a message that provides a link to open the clearing cashiers sales screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
 
 - **Post to Financial System:**
-  - "open new post to financial system" → intent: `"open_screen_command"`, route: `"$tab/newPostToFinancialSystem"`, and a message that provides a link to open the post to financial system screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  - "open new post to financial system" → intent: `"open_screen_command"`, route: `"tab/newPostToFinancialSystem"`, and a message that provides a link to open the post to financial system screen directly with two line information about what screen is about. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
+  
+
+**Context**: {context}
 
 **Question:** {question}
 
@@ -178,13 +181,14 @@ Return a JSON object containing the intent, and, if applicable, the route or act
 
 def process_command(question):
     # Create the prompt template
-    prompt_for_command = PromptTemplate(template=intent_prompt, input_variables=["question"])
+    docs = new_db.similarity_search(question)
+    prompt_for_command = PromptTemplate(template=intent_prompt, input_variables=["question","context"])
 
     # Create the LLMChain for processing the prompt
     runnable = prompt_for_command | model
 
     # Pass the question
-    result = runnable.invoke({"question": question})
+    result = runnable.invoke({"question": question, "context": docs})
 
     # Retrieve and clean the content of the result
     result_content = result.content.strip()
