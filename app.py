@@ -60,6 +60,8 @@ new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserializa
 model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", generation_config=generation_config)
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
+main_url='https://onix-ix.firebaseapp.com'
+
 collection_name = 'onix_data'
 prompt_template = """
     Use the **context** provided to answer the **question** in a friendly, conversational tone. Keep the response lively and engaging. If the answer requires more detail, break it into clear, easy-to-read points with relevant **emojis**, limiting to a maximum of 5 points. For simpler questions, provide a brief and concise response—easy to read at a single glance.
@@ -95,18 +97,18 @@ If the question does not relate to these commands, classify it as either "comman
   Default option is customer orders if nothing is mentioned after
   
 - **Specific Commands:**
-  - "open logs screen" or "show logs" → intent: `"open_screen_command"`, route: `"/logs"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
-  - "show customer orders" or "open orders screen" → intent: `"open_screen_command"`, route: `"/orders"`,and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
-  - "view dashboard" or "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
-  - "open settings" or "show settings screen" → intent: `"open_screen_command"`, route: `"/settings"`, and a message that give provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
-  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number], 'option' is new field with *Print customer order* or *Open customer order* in list of strings only, use emoji for options visual appeal if Open send https://github.com/Sarthak-source/onyx-ai, if Print send print [order number] give ask do you need anything else `
+  - "open logs screen" or "show logs" → intent: `"open_screen_command"`, route: `"/logs"`, and a message that give provide a link to open the order page directly. (Link prefix: `{main_url}`)
+  - "show customer orders" or "open orders screen" → intent: `"open_screen_command"`, route: `"/allCustomersOrders"`,and a message that give provide a link to open the order page directly. (Link prefix: `{main_url}`)
+  - "view dashboard" or "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`, and a message that give provide a link to open the order page directly. (Link prefix: `{main_url}`)
+  - "open settings" or "show settings screen" → intent: `"open_screen_command"`, route: `"/settings"`, and a message that give provide a link to open the order page directly. (Link prefix: `{main_url}`)
+  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number], 'option' is new field with *Print customer order* or *Open customer order* in list of strings only, use emoji for options visual appeal if Open send {main_url}, if Print send print [order number] give ask do you need anything else `
   - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`
   - "show previous orders" or "display last orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`
 
 **Special Instructions:**
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
 - When a number is provided, confirm the action is completed.
-- After completing an action, provide a link to open the order page directly. (Link prefix: `https://github.com/Sarthak-source/onyx-ai`)
+- After completing an action, provide a link to open the order page directly. (Link prefix: `{main_url}`)
 - And next to it in bold ask should I print
 - If none of the above mentioned in message please say I can't help with this, please ask something else
 
