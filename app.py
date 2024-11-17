@@ -110,6 +110,9 @@ If the question does not relate to these commands, classify it as either "comman
 - And next to it in bold ask should I print
 - If none of the above mentioned in message please say I can't help with this, please ask something else
 
+- **Dashboard:**
+  - "open dashboard" → intent: `"open_screen_command"`, route: `"/dashboard"`, and a message that provides a link to open the dashboard directly. (Link prefix: `https://onix-ix.firebaseapp.com`)
+
 - **Customers Orders:**
   - "open all customer orders" → intent: `"open_screen_command"`, route: `"$tab/allCustomersOrders"`, and a message that provides a link to open the customer orders directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
   - "open new customer order" → intent: `"open_screen_command"`, route: `"$tab/newCustomerOrder"`, and a message that provides a link to open the new customer order screen directly. (Link prefix: `'https://onix-ix.firebaseapp.com'`)
