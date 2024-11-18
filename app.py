@@ -97,7 +97,7 @@ If the question does not relate to these commands, classify it as either "comman
   Default option is customer orders if nothing is mentioned after
   
 - **Specific Commands:**
-  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number], 'option' is new field with *Print customer order* or *Open customer order* in list of strings only, use emoji for options visual appeal if Open send 'https://onix-ix.firebaseapp.com', if Print send print [order number] give ask do you need anything else `
+  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`, 'option' is new field with *Print customer order `[order number]`* or *Open customer order `[order number]`* in list of strings only, use emoji for options visual appeal if Open send 'https://onix-ix.firebaseapp.com/tab/allCustomersOrders/`[order number]`', if Print send print [order number] give ask do you need anything else `
   - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`
   - "show previous customer orders" or "display last customer orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`
 
