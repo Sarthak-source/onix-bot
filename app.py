@@ -57,7 +57,7 @@ generation_config = {
   "response_mime_type": "text/plain",
 }
 new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", generation_config=generation_config)
+model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", generation_config=generation_config)
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 main_url='https://onix-ix.firebaseapp.com'
@@ -90,19 +90,19 @@ intent_prompt = """
 Given a user question, determine the intent and, if it is related to opening a specific screen or performing an action, return the intent along with any necessary details such as the route or action type. Respond in a friendly tone and use appropriate emojis.
 If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action return intent.
 **question** are to be recognized by terms, "what is", "explain to me", "define", And similar terms,
-If **question** doesn't have term open or "Previous" " Open" and {context} has the term it is a **question**
+If **question** doesn't have term open or "Get previous" " Open" and {context} has the term it is a **question**
 
 
 **Available intents and routes/actions:**
 - **General Prompt for Selection:**
-  If the **command** doesn’t include "Show previous" or " Open" or offer the user selection options Give a list of string of either "Show Previous **command**" and " Open **command**" only these two options next to option string put an emoji  in option field relevant to question ask, for example:- ['Access Settings ⚙️'], 
+  If the **command** doesn’t include "Get previous" or " Open" or offer the user selection options Give a list of string of either "Get previous **command**" and " Open **command**" only these two options next to option string put an emoji  in option field relevant to question ask, for example:- ['Access Settings ⚙️'], 
   Give a message field → intent: `"select_intent_command"`
   Default option is customer orders if nothing is mentioned after
   
 - **Specific Commands:**
   - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`, 'option' is new field with *Print customer order `[order number]`* or *Open previous customer order `[order number]`* in list of strings only, use emoji for options visual appeal message need not contain direct link to screen, if Print send print [order number] give ask do you need anything else `
-  - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`
-  - "show previous customer orders" or "display last customer orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`
+  - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`, no option field
+  - "show previous customer orders" or "display last customer orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`, no option field
 
 **Special Instructions:**
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
