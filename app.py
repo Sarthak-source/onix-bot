@@ -90,6 +90,7 @@ intent_prompt = """
 Given a user question, determine the intent and, if it is related to opening a specific screen or performing an action, return the intent along with any necessary details such as the route or action type. Respond in a friendly tone and use appropriate emojis.
 If the question does not relate to these commands, classify it as either "command" or "question" and do not return a route or action return intent.
 **question** are to be recognized by terms, "what is", "explain to me", "define", And similar terms,
+If **question** doesn't have term open or "Previous" " Open" and {context} has the term it is a **question**
 
 
 **Available intents and routes/actions:**
