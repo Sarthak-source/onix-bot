@@ -18,7 +18,7 @@ import re
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secret key for session management
-CORS(app , origins=['https://sarthak-source.github.io'])
+CORS(app)
 
 print('bot-says-hello-world')
 
@@ -57,7 +57,7 @@ generation_config = {
   "response_mime_type": "text/plain",
 }
 new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-model = ChatGoogleGenerativeAI(model="gemini-1.5-pro", generation_config=generation_config)
+model = ChatGoogleGenerativeAI(model="gemini-1.5-flash", generation_config=generation_config)
 genai.configure(api_key=os.getenv('GOOGLE_API_KEY'))
 
 main_url='https://onix-ix.firebaseapp.com'
