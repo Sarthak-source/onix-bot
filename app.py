@@ -18,7 +18,7 @@ import re
 # Initialize Flask app
 app = Flask(__name__)
 app.secret_key = os.urandom(24)  # Set a secret key for session management
-CORS(app, origins=["https://sarthak-source.github.io"])
+CORS(app)
 
 print('bot-says-hello-world')
 
@@ -100,7 +100,7 @@ If **question** doesn't have term open or "Get previous" " Open" and {context} h
   Default option is customer orders if nothing is mentioned after
   
 - **Specific Commands:**
-  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`, 'option' is new field with *Print customer order `[order number]`* or *Open previous customer order `[order number]`* in list of strings only, use emoji for options visual appeal message need not contain direct link to screen, if Print send print [order number] give ask do you need anything else `
+  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`, 'option' is new field with *Print customer order `[order number]`* or *Open previous customer order `[order number]`* in list of strings only, use emoji for options visual appeal message need to contain direct link to screen https://onix-ix.firebaseapp.com/CustomerOrder/`[order number]`, if Print send print [order number] give ask do you need anything else `
   - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`, no option field
   - "Get previous customer orders" or "display last customer orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`, no option field
 
