@@ -100,9 +100,10 @@ If **question** doesn't have term open or "Get previous" " Open" and {context} h
   Default option is customer orders if nothing is mentioned after
   
 - **Specific Commands:**
-  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`, 'option' is new field with *Print customer order `[order number]`* or *Open previous customer order `[order number]`* in list of strings only, use emoji for options visual appeal message need to contain direct link to screen https://onix-ix.firebaseapp.com/CustomerOrder/`[order number]`, if Print send print [order number] give ask do you need anything else `
+  - "get details for order [order number]" → intent: `"view_order_details"`, action: `"lookup_order"`, order_number: `[order number]`, 'option' is new field with *Print customer order `[order number]`* or *Go to customer order `[order number]`* in list of strings only, use emoji for options visual appeal message, if Print send print [order number] give ask do you need anything else `
   - "update order status to [status number]" → intent: `"update_order_status"`, action: `"update_status"`, status: `[status number]`, no option field
   - "Get previous customer orders" or "display last customer orders" → intent: `"view_previous_orders"`, action: `"list_recent_orders"`, limit: `5`, no option field
+  - *Go to customer order `[order number]`* should give a link `https://onix-ix.firebaseapp.com/customerOrder/*`[order number]`*
 
 **Special Instructions:**
 - If a command to "update" or "open" lacks a specific number (e.g., order or status number), ask the user for this information in a friendly tone.
